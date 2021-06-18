@@ -1,0 +1,60 @@
+@import './../../../styles/base/colors';
+@import './../../../styles/utils/mixins';
+@import './../../../styles/utils/breakpoints';
+@import './../../../styles/base/variables';
+
+.input {
+  position: relative;
+  width: 100%;
+
+  &__field {
+    margin: 0 0 10px;
+    padding: 25px 30px;
+    width: 100%;
+    font-weight: normal;
+    color: $color--violet;
+    background-color: $color--white;
+    border: solid 1px $color--black;
+    border-radius: $border-radius;
+
+    &:focus {
+      color: $color--violet;
+      border-color: $color--violet-darker;
+      outline: none;
+    }
+
+    &::placeholder {
+      opacity: .3;
+      color: $color--black;
+    }
+  }
+
+  &__label {
+    margin: 5px 0 10px;
+    display: inline-block;
+    color: $color--black-ligher;
+
+    &--hidden {
+      @include visually-hidden;
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    z-index: 10;
+    top: calc(50% - 4px);
+    left: 20px;
+    width: 30px;
+    height: 30px;
+
+    svg {
+      @include set-svg(30px, $color--violet);
+    }
+  }
+
+  &--has-icon {
+    .input__field {
+      padding: 25px 30px 25px 65px;
+    }
+  }
+}

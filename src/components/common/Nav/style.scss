@@ -1,0 +1,31 @@
+@import '../../../styles/base/colors';
+@import '../../../styles/base/variables';
+
+.nav {
+  margin: 20px 0;
+
+  &-menu {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    list-style: none;
+
+    &__item {
+      margin-left: 10px;
+
+      &--active {
+        font-weight: bold;
+      }
+
+      a {
+        color: $color--black;
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+          color: $color--violet;
+        }
+      }
+    }
+  }
+}

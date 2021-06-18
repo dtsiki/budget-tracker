@@ -1,0 +1,33 @@
+@import '../../../styles/base/colors';
+@import '../../../styles/base/variables';
+
+.text {
+  &--left {
+    text-align: left;
+  }
+
+  &--center {
+    text-align: center;
+  }
+
+  &--justify {
+    text-align: justify;
+  }
+
+  &--has-gap {
+    margin: 15px 0;
+  }
+
+  + .text {
+    margin-top: 10px;
+  }
+
+  a {
+    color: $color--black;
+
+    &:hover,
+    &:focus {
+      color: $color--violet;
+    }
+  }
+}

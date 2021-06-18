@@ -1,0 +1,54 @@
+@import '../../../styles/base/colors';
+@import '../../../styles/base/variables';
+@import '../../../styles/utils/mixins';
+
+.notifications {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: block;
+}
+
+.message {
+  position: relative;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  color: $color--violet;
+  background-color: $color--white;
+  border: 1px solid $color--violet;
+  border-radius: 5px;
+
+  &__text {
+    padding-right: 20px;
+  }
+
+  + .message {
+    margin-top: 5px;
+  }
+
+  &-button {
+    position: absolute;
+    right: 20px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    width: 10px;
+    height: 10px;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+
+    &__label {
+      @include visually-hidden;
+    }
+
+    &__icon {
+      svg {
+        @include set-svg(100%, $color--violet);
+      }
+    }
+  }
+}

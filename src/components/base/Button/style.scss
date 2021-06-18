@@ -1,0 +1,48 @@
+@import '../../../styles/base/colors';
+@import '../../../styles/base/variables';
+
+.button {
+  padding: 15px 20px;
+  min-width: 150px;
+  border: 0;
+  border-radius: $border-radius;
+  cursor: pointer;
+
+  &--primary {
+    color: $color--white;
+    background-color: $color--violet;
+    border: 1px solid $color--violet;
+
+    &:hover,
+    &:focus {
+      background-color: $color--violet-darker;
+    }
+
+    a {
+      color: $color--white;
+    }
+  }
+
+  &--secondary {
+    color: $color--violet;
+    background-color: $color--white-darker;
+    border: 1px solid $color--violet;
+
+    &:hover,
+    &:focus {
+      background-color: $color--white-pink;
+    }
+
+    a {
+      color: $color--violet;
+    }
+  }
+
+  + .button {
+    margin-left: 10px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

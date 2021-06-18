@@ -1,0 +1,82 @@
+{
+  "name": "budget-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@storeon/localstorage": "^1.4.0",
+    "firebase": "^8.6.1",
+    "lint-staged": "^10.4.2",
+    "node-sass": "^4.14.1",
+    "normalize-scss": "^7.0.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.3",
+    "storeon": "^3.1.1",
+    "stylelint": "^13.7.2",
+    "stylelint-at-rule-no-children": "^0.3.1",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-recommended-scss": "^4.2.0",
+    "stylelint-declaration-block-no-ignored-properties": "^2.3.0",
+    "stylelint-order": "^4.1.0",
+    "stylelint-scss": "^3.18.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint --debug src/",
+    "lint:write": "eslint --debug src/ --fix",
+    "lint-staged": "lint-staged",
+    "format:scss": "prettier --write \"src/**/*.scss\" && stylelint \"src/**/*.scss\" --fix --config ./.stylelintrc-format",
+    "format:js": "eslint --fix \"src/**/*.js\"",
+    "format": "npm-run-all format:*"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "./src/**/*.scss": [
+      "prettier --write",
+      "stylelint --fix --config ./.stylelintrc-format",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.6",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-simple-import-sort": "^5.0.0",
+    "husky": "^4.3.0",
+    "onchange": "^6.1.0",
+    "prettier": "^1.18.2"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

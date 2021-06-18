@@ -1,0 +1,80 @@
+@import './../base/colors';
+@import './../base/variables';
+@import './../utils/breakpoints';
+@import './../utils/mixins';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  vertical-align: baseline;
+  border: 0;
+}
+
+img {
+  display: block;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  color: $color--black;
+  background-color: $color--white;
+}
+
+.form {
+  margin: 0 auto;
+
+  &__footer {
+    margin: 30px 0;
+  }
+}
+
+.container {
+  margin: 0 auto;
+  width: 90%;
+  max-width: 700px;
+}
+
+.sidebar {
+  margin-bottom: 20px;
+  padding: 30px 10px;
+  background-color: $color--white-violet;
+  border: 1px solid $color--white-violet;
+  border-radius: 5px;
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.section {
+  margin: 20px 0;
+  padding: 30px;
+  border: 1px solid $color--white-violet;
+  border-radius: 5px;
+}
