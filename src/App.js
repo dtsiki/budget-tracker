@@ -6,7 +6,6 @@ import Loader from './components/base/Loader';
 import { AdminRoute, PrivateRoute } from './components/base/Routes/';
 import Nav from './components/common/Nav';
 import Notifications from './components/common/Notifications';
-import Sidebar from './components/common/Sidebar';
 import Admin from './components/pages/Admin';
 import Error from './components/pages/Error';
 import Main from './components/pages/Main';
@@ -63,19 +62,14 @@ const App = () => {
     <>
       <div className="wrapper">
         <Nav />
-        <div className="container">
-          <Sidebar />
-          <main className="content">
-            <Switch>
-              <PrivateRoute exact path="/" isLogin={user.isLogin} component={Main} />
-              <PrivateRoute path="/profile" isLogin={user.isLogin} component={Profile} />
-              <AdminRoute path="/admin" isLogin={user.isLogin} isAdmin={user.isAdmin} component={Admin} />
-              <Route path="/signin" component={SignIn} />
-              <Route path="/signup" component={SignUp} />
-              <Route path="*" component={Error} />
-            </Switch>
-          </main>
-        </div>
+        <Switch>
+          <PrivateRoute exact path="/" isLogin={user.isLogin} component={Main} />
+          <PrivateRoute path="/profile" isLogin={user.isLogin} component={Profile} />
+          <AdminRoute path="/admin" isLogin={user.isLogin} isAdmin={user.isAdmin} component={Admin} />
+          <Route path="/signin" component={SignIn} />
+          <Route path="/signup" component={SignUp} />
+          <Route path="*" component={Error} />
+        </Switch>
       </div>
       <Notifications />
     </>

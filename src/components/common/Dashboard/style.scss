@@ -1,0 +1,31 @@
+@import '../../../styles/base/colors';
+@import '../../../styles/base/variables';
+
+.dashboard {
+  padding-left: 200px;
+  display: flex;
+  height: 100vmin;
+  flex-direction: column;
+
+  &__content {
+    padding: 50px;
+    flex-grow: 1;
+  }
+
+  &__footer {
+    padding: 30px;
+    background-color: $color--white;
+  }
+}
+
+.footer {
+  &__link {
+    text-decoration: none;
+    color: $color--violet;
+
+    &:hover,
+    &:focus {
+      color: $color--black;
+    }
+  }
+}
