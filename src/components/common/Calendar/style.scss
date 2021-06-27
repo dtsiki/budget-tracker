@@ -1,0 +1,36 @@
+@import '../../../styles/base/colors';
+@import '../../../styles/base/variables';
+
+.calendar {
+  .DayPicker {
+    padding: 20px;
+    background-color: $color--white-darker;
+    border-radius: 15px;
+
+    &-Day {
+      width: 40px;
+      height: 40px;
+      font-size: 12px;
+      font-weight: normal;
+      text-align: center;
+      color: $color--violet;
+
+      &--today {
+        font-weight: normal;
+        color: $color--violet;
+        background-color: $color--white-violet;
+        border-radius: 100%;
+
+        &:hover,
+        &:focus {
+          cursor: pointer;
+        }
+      }
+
+      &--selected {
+        color: $color--white !important; //stylelint-disable-line
+        background-color: $color--violet !important; //stylelint-disable-line
+      }
+    }
+  }
+}
