@@ -1,0 +1,23 @@
+@import './../../../styles/base/colors';
+
+.scrollbar {
+  width: 1px;
+  border-radius: 1px;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    background: $color--violet;
+  }
+}
+
+.simplebar-track {
+  &.simplebar-vertical {
+    width: 1px;
+    background: $color--white-violet;
+  }
+}
