@@ -44,7 +44,7 @@ const Input = ({
 };
 
 Input.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  value: PropTypes.any,
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
   name: PropTypes.string,
