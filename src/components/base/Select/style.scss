@@ -1,0 +1,41 @@
+@import './../../../styles/base/colors';
+@import './../../../styles/utils/mixins';
+@import './../../../styles/utils/breakpoints';
+
+.select {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+
+  &__dropdown {
+    padding: 25px 30px;
+    width: 100%;
+    color: $color--violet;
+    background-color: $color--white;
+    border: solid 1px $color--black;
+    border-radius: $border-radius;
+    cursor: pointer;
+    appearance: none;
+
+    &-icon {
+      position: absolute;
+      right: 20px;
+
+      svg {
+        color: $color--black;
+      }
+    }
+  }
+
+  &__label {
+    position: absolute;
+    top: 20px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  &--has-label {
+    padding-top: 50px;
+  }
+}
