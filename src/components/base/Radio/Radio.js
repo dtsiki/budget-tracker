@@ -3,19 +3,19 @@ import React from 'react';
 
 import './style.scss';
 
-const Radio = ({ id, name, value, changeValue, label, radioClassName, labelClassName, defaultChecked = false }) => {
+const Radio = ({ name, value, changeValue, label, wrapperClassName, radioClassName, labelClassName, checked }) => {
   return (
-    <div className="radio">
+    <div className={`radio${wrapperClassName ? ` ${wrapperClassName}` : ''}`}>
       <input
         className={`radio__input${radioClassName ? ` ${radioClassName}` : ''}`}
         type="radio"
         name={name}
-        id={id}
+        id={name}
         value={value}
         onChange={(value) => changeValue(value)}
-        defaultChecked={defaultChecked}
+        checked={checked}
       />
-      <label className={`radio__label${labelClassName ? ` ${labelClassName}` : ''}`} htmlFor={id}>
+      <label className={`radio__label${labelClassName ? ` ${labelClassName}` : ''}`} htmlFor={name}>
         {label}
       </label>
     </div>
@@ -30,7 +30,8 @@ Radio.propTypes = {
   label: PropTypes.string,
   radioClassName: PropTypes.string,
   labelClassName: PropTypes.string,
-  defaultChecked: PropTypes.bool,
+  checked: PropTypes.bool,
+  wrapperClassName: PropTypes.string,
 };
 
 export default Radio;
