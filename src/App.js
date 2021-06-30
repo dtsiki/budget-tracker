@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 import { useStoreon } from 'storeon/react';
 
 import Loader from './components/base/Loader';
-import { AdminRoute, PrivateRoute } from './components/base/Routes/';
+import { PrivateRoute, PublicRoute } from './components/base/Routes/';
 import Nav from './components/common/Nav';
 import Notifications from './components/common/Notifications';
 import Admin from './components/pages/Admin';
+import Budget from './components/pages/Budget';
 import Error from './components/pages/Error';
 import Main from './components/pages/Main';
 import Profile from './components/pages/Profile';
@@ -16,9 +17,17 @@ import { auth } from './config';
 import { getUserDoc } from './controllers/firebase/auth';
 
 const App = () => {
-  const { user, dispatch } = useStoreon('user');
+  const { dispatch } = useStoreon('user');
   const [isInitializing, setInitializing] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+
+  const links = [
+    { name: 'Main', path: '/' },
+    { name: 'Budget', path: '/budget', isAuthRequired: true },
+    { name: 'Profile', path: '/profile', isAuthRequired: true },
+    { name: 'Sign In', path: '/signin', isAuthNotRequired: true },
+    { name: 'Secret page', path: 'admin', isAuthRequired: true },
+  ];
 
   const onAuthStateChanged = (user) => {
     setCurrentUser(user);
@@ -50,6 +59,7 @@ const App = () => {
         displayName: currentUser.displayName,
         email: currentUser.email,
         isAdmin: isUserAdmin ? true : false,
+        userId: currentUser.uid,
       };
 
       dispatch('user/login', userInfo);
@@ -61,14 +71,15 @@ const App = () => {
   ) : (
     <>
       <div className="wrapper">
-        <Nav />
+        <Nav links={links} />
         <Switch>
-          <PrivateRoute exact path="/" isLogin={user.isLogin} component={Main} />
-          <PrivateRoute path="/profile" isLogin={user.isLogin} component={Profile} />
-          <AdminRoute path="/admin" isLogin={user.isLogin} isAdmin={user.isAdmin} component={Admin} />
-          <Route path="/signin" component={SignIn} />
-          <Route path="/signup" component={SignUp} />
-          <Route path="*" component={Error} />
+          <PrivateRoute exact path="/" component={Main} />
+          <PrivateRoute path="/profile" component={Profile} />
+          <PrivateRoute path="/budget" component={Budget} />
+          <PrivateRoute path="/admin" component={Admin} isForbidden />
+          <PublicRoute path="/signin" component={SignIn} />
+          <PublicRoute path="/signup" component={SignUp} />
+          <PublicRoute path="*" component={Error} />
         </Switch>
       </div>
       <Notifications />

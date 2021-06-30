@@ -1,18 +1,28 @@
+import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink, useHistory } from 'react-router-dom';
 import { useStoreon } from 'storeon/react';
+
+import { logout } from './../../../controllers/firebase/auth';
+import Button from './../../base/Button';
 
 import './style.scss';
 
-const Nav = () => {
-  const { user } = useStoreon('user');
+const Nav = ({ links }) => {
+  const { user, dispatch } = useStoreon('user');
+  const history = useHistory();
 
-  const links = [
-    { name: 'Main', path: '/' },
-    { name: 'Profile', path: '/profile', isAuthRequired: true },
-    { name: 'Sign In', path: '/signin', isAuthNotRequired: true },
-    { name: 'Secret page', path: 'admin', isAuthRequired: true },
-  ];
+  const handleLogout = async () => {
+    await logout()
+      .then(() => {
+        dispatch('user/logout');
+        dispatch('notifications/add', 'You have been logged out, see you later 👋');
+        history.push('/signin');
+      })
+      .catch((error) => {
+        dispatch('notifications/add', `Logout failed: ${error}`);
+      });
+  };
 
   const renderMenu = useMemo(() => {
     return links.map((link) => {
@@ -26,11 +36,25 @@ const Nav = () => {
     });
   }, [links]);
 
-  return (
+  return user.isLogin ? (
     <nav className="nav">
       <ul className="nav-menu">{renderMenu}</ul>
+
+      <footer className="nav-footer">
+        {user.isLogin ? (
+          <Button onClick={handleLogout}>Logout</Button>
+        ) : (
+          <Button>
+            <Link to="/signin">Sign in</Link>
+          </Button>
+        )}
+      </footer>
     </nav>
-  );
+  ) : null;
+};
+
+Nav.propTypes = {
+  links: PropTypes.array,
 };
 
 export default Nav;
