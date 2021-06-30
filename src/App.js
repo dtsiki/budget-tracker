@@ -67,7 +67,7 @@ const App = () => {
   }, [currentUser]);
 
   return isInitializing ? (
-    <Loader />
+    <Loader isFullscreen />
   ) : (
     <>
       <div className="wrapper">

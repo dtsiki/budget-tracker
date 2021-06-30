@@ -3,9 +3,9 @@ import React from 'react';
 
 import './style.scss';
 
-const Loader = () => {
+const Loader = ({ isFullscreen = false }) => {
   return (
-    <div className="loader">
+    <div className={`loader${isFullscreen ? 'loader--fullscreen' : ''}`}>
       <div className="loader__wrapper">
         <div className="loader__spinner" />
         <div className="loader__label">Loading...</div>
@@ -17,6 +17,7 @@ const Loader = () => {
 Loader.propTypes = {
   children: PropTypes.node,
   isBlurred: PropTypes.bool,
+  isFullscreen: PropTypes.bool,
 };
 
 export default Loader;

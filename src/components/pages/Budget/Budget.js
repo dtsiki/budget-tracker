@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useStoreon } from 'storeon/react';
 
 import { getTransactions } from './../../../controllers/firebase/transactions';
+import Loader from './../../base/Loader';
 import Radio from './../../base/Radio';
 import Transactions from './../../common/Transactions';
 
@@ -81,7 +82,7 @@ const Budget = () => {
       <div className="flex">{renderTypes}</div>
       <div className="section">
         <h2>{type}</h2>
-        {isInitializing[type] ? <div>Loading {type}</div> : <Transactions transactions={transactions[type]} />}
+        {isInitializing[type] ? <Loader /> : <Transactions transactions={transactions[type]} />}
       </div>
     </div>
   );
