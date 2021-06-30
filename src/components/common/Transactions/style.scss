@@ -1,0 +1,8 @@
+@import '../../../styles/base/colors';
+@import '../../../styles/base/variables';
+@import '../../../styles/utils/mixins';
+
+.transaction {
+  display: flex;
+  justify-content: space-between;
+}
