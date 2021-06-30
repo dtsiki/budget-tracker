@@ -27,7 +27,7 @@ const Transactions = ({ transactions }) => {
 };
 
 Transactions.propTypes = {
-  transactions: PropTypes.object,
+  transactions: PropTypes.array,
 };
 
 export default Transactions;

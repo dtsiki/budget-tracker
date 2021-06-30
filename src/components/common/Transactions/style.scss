@@ -2,6 +2,14 @@
 @import '../../../styles/base/variables';
 @import '../../../styles/utils/mixins';
 
+.transactions {
+  &__item {
+    + .transactions__item {
+      margin-top: 20px;
+    }
+  }
+}
+
 .transaction {
   display: flex;
   justify-content: space-between;
