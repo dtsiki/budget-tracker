@@ -1,0 +1,80 @@
+$grid-spacer-xs: 20px;
+
+.row {
+  margin-right: -$grid-spacer-xs;
+  margin-left: -$grid-spacer-xs;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-1 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (1 / 12 * 100%);
+}
+
+.col-2 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (2 / 12 * 100%);
+}
+
+.col-3 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (3 / 12 * 100%);
+}
+
+.col-4 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (4 / 12 * 100%);
+}
+
+.col-5 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (5 / 12 * 100%);
+}
+
+.col-6 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (6 / 12 * 100%);
+}
+
+.col-7 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (7 / 12 * 100%);
+}
+
+.col-8 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (8 / 12 * 100%);
+}
+
+.col-9 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (9 / 12 * 100%);
+}
+
+.col-10 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (10 / 12 * 100%);
+}
+
+.col-11 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: (11 / 12 * 100%);
+}
+
+.col-12 {
+  padding-right: $grid-spacer-xs;
+  padding-left: $grid-spacer-xs;
+  width: 100%;
+}
