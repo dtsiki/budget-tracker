@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useStoreon } from 'storeon/react';
 
 import { addUserToCollection, signUpWithCredential } from './../../../controllers/firebase/auth';
+import { initTransactionsCollection } from './../../../controllers/firebase/transactions';
 import Button from './../../base/Button';
 import Checkbox from './../../base/Checkbox';
 import Input from './../../base/Input';
@@ -50,8 +51,10 @@ const SignUp = () => {
             username: form.username,
           });
 
-          if (addResult) {
-            history.push('/profile');
+          const initResult = await initTransactionsCollection(result.user.uid);
+
+          if (addResult && initResult) {
+            history.push('/');
             dispatch('notifications/add', `Welcome! 💜`);
             dispatch('user/login', userInfo);
           } else {
