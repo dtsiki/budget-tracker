@@ -44,7 +44,7 @@ const SignIn = () => {
 
           dispatch('user/login', userInfo);
           dispatch('notifications/add', 'Welcome back 🤟');
-          history.push('/profile');
+          history.push('/');
         }
       })
       .catch((error) => {
