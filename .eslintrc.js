@@ -11,7 +11,7 @@ module.exports = {
     require: true,
     module: true,
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:prettier/recommended'],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:prettier/recommended', 'plugin:jsx-a11y/recommended'],
   parser: 'babel-eslint',
   parserOptions: {
     ecmaFeatures: {
@@ -21,7 +21,7 @@ module.exports = {
     },
     sourceType: 'module',
   },
-  plugins: ['babel', 'react', 'simple-import-sort', 'prettier'],
+  plugins: ['babel', 'react', 'simple-import-sort', 'prettier', 'jsx-a11y'],
   rules: {
     'linebreak-style': ['warn', 'unix'],
     'lines-between-class-members': ['warn', 'always'],
