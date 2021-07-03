@@ -73,8 +73,45 @@ body {
 }
 
 .section {
+  position: relative;
   margin: 20px 0;
   padding: 30px;
   border: 1px solid $color--white-violet;
   border-radius: 5px;
+
+  &__loader {
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    margin: auto;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%);
+  }
+
+  &--has-loader {
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      opacity: .5;
+      content: '';
+      background-color: $color--grey-lighter;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.public {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: auto;
+  width: 100%;
+  max-width: 500px;
+  transform: translate(-50%, -50%);
 }

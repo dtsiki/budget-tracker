@@ -64,6 +64,11 @@ const Categories = () => {
   };
 
   const addCategory = async () => {
+    if (!category) {
+      dispatch('notifications/add', 'Category is empty');
+      return;
+    }
+
     if (categories[type]) {
       setLocalCategories(categories);
 

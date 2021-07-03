@@ -82,7 +82,7 @@ const Budget = () => {
       <div className="flex">{renderTypes}</div>
       <div className="section">
         <h2>{type}</h2>
-        {isInitializing[type] ? <Loader /> : <Transactions transactions={transactions[type]} />}
+        {isInitializing[type] ? <Loader /> : <Transactions transactions={transactions[type]} type={type} />}
       </div>
     </div>
   );
