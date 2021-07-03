@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useStoreon } from 'storeon/react';
 
 import Button from '../../base/Button';
+import defaultCategories from './../../../constants/defaultCategories';
 import { addCategories, getCategories } from './../../../controllers/firebase/categories';
 import Input from './../../base/Input';
 import Loader from './../../base/Loader';
@@ -98,6 +99,11 @@ const Categories = () => {
     setUpdateCategories(true);
   };
 
+  const resetCategories = async () => {
+    setLocalCategories(defaultCategories);
+    setUpdateCategories(true);
+  };
+
   const renderCategories = useMemo(() => {
     if (!categories) return;
 
@@ -154,6 +160,9 @@ const Categories = () => {
         />
         <Button onClick={addCategory}>Add new category</Button>
         {isInitializing.categories ? <Loader /> : <ul className="categories">{renderCategories}</ul>}
+        <Button onClick={resetCategories} variant="secondary">
+          Reset categories
+        </Button>
       </div>
     </>
   );
