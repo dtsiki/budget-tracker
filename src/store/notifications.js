@@ -2,12 +2,19 @@ export const notifications = (store) => {
   store.on('@init', () => ({ notifications: [] }));
 
   store.on('notifications/add', ({ notifications }, message) => {
-    const notification = {
-      message: message,
-      id: Date.now(),
-    };
+    return addNotification(notifications, message);
+  });
 
-    return { notifications: notifications.concat([notification]) };
+  store.on('notifications/info', ({ notifications }, message) => {
+    return addNotification(notifications, message, 'info');
+  });
+
+  store.on('notifications/error', ({ notifications }, message) => {
+    return addNotification(notifications, message, 'error');
+  });
+
+  store.on('notifications/warning', ({ notifications }, message) => {
+    return addNotification(notifications, message, 'warning');
   });
 
   store.on('notifications/remove', ({ notifications }, id) => {
@@ -19,4 +26,14 @@ export const notifications = (store) => {
       notifications: updatedNotifications,
     };
   });
+};
+
+const addNotification = (notifications, message, type = 'default') => {
+  const notification = {
+    type: type,
+    message: message,
+    id: Date.now(),
+  };
+
+  return { notifications: notifications.concat([notification]) };
 };

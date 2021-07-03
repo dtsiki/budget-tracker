@@ -1,3 +1,4 @@
+// stylelint-disable no-descending-specificity
 @import '../../../styles/base/colors';
 @import '../../../styles/base/variables';
 @import '../../../styles/utils/mixins';
@@ -11,7 +12,7 @@
 
 .message {
   position: relative;
-  padding: 20px 30px;
+  padding: 20px 30px 20px 20px;
   display: flex;
   align-items: center;
   color: $color--violet;
@@ -21,6 +22,36 @@
 
   &__text {
     padding-right: 20px;
+  }
+
+  &--info {
+    .message-type {
+      svg {
+        color: $color--violet;
+      }
+    }
+  }
+
+  &--error {
+    .message-type {
+      svg {
+        color: $color--black;
+      }
+    }
+  }
+
+  &--warning {
+    .message-type {
+      svg {
+        color: $color--grey-dark;
+      }
+    }
+  }
+
+  &-type {
+    svg {
+      margin-right: 10px;
+    }
   }
 
   + .message {
