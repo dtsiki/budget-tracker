@@ -1,16 +1,25 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useStoreon } from 'storeon/react';
 
 import Button from '../../base/Button';
-import Text from '../../base/Text';
+import Radio from '../../base/Radio';
+import defaultCurrencies from './../../../constants/defaultCurrencies';
+import { updateCurrency } from './../../../controllers/firebase/currency';
+import Dropdown from './../../base/Dropdown';
 import Categories from './../../common/Categories';
 import AddTransaction from './../../scenes/AddTransaction';
 
 const Main = () => {
-  const { userTransactions, userCategories } = useStoreon('user', 'userTransactions', 'userCategories');
+  const { userTransactions, userCategories, userCurrency, user, dispatch } = useStoreon(
+    'user',
+    'userTransactions',
+    'userCategories',
+    'userCurrency'
+  );
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [showCategories, setShowCategories] = useState(false);
   const [type, setType] = useState('expenses');
+  const [currency, setCurrency] = useState(userCurrency);
 
   const toggleTransaction = () => {
     setShowTransactionForm((showTransactionForm) => !showTransactionForm);
@@ -20,14 +29,43 @@ const Main = () => {
     setShowCategories((showCategories) => !showCategories);
   };
 
+  const selectCurrency = async (currency) => {
+    const result = await updateCurrency(user.userId, currency);
+
+    dispatch('notifications/add', result);
+
+    setCurrency(currency);
+  };
+
+  const renderСurrencies = useMemo(() => {
+    return defaultCurrencies.map((defaultCurrency) => {
+      return (
+        <Radio
+          key={`currency-${defaultCurrency}`}
+          wrapperClassName=""
+          label={defaultCurrency}
+          value={defaultCurrency}
+          name={defaultCurrency}
+          checked={currency === defaultCurrency}
+          changeValue={() => selectCurrency(defaultCurrency)}
+        />
+      );
+    });
+  }, [defaultCurrencies, currency]);
+
   const renderExpenses = useMemo(() => {
     return userCategories.expense.map((category) => {
       const categoryExpenses = userTransactions.expenses.filter((expense) => expense.category === category);
 
+      const reducer = (accumulator, currentValue) => accumulator + parseInt(currentValue.value);
+      const categorySummary = categoryExpenses.reduce(reducer, 0);
+
       if (categoryExpenses.length) {
         return (
           <div key={`${category}-expenses`} className="group">
-            <h3>{category}</h3>
+            <h3>
+              {category} ({categorySummary})
+            </h3>
             <ul className="list">
               {categoryExpenses.map((expense) => {
                 return (
@@ -69,6 +107,10 @@ const Main = () => {
           {showTransactionForm ? `Hide` : `Add transaction`}
         </Button>
         {showTransactionForm && <AddTransaction />}
+      </div>
+      <div className="section">
+        <h2>Manage currency</h2>
+        <Dropdown label={`Currency (${currency})`} items={renderСurrencies} />
       </div>
     </div>
   );

@@ -16,16 +16,18 @@ import SignUp from './components/pages/SignUp';
 import { auth } from './config';
 import transactionTypes from './constants/transactionTypes';
 import { getUserDoc } from './controllers/firebase/auth';
+import { getCurrency } from './controllers/firebase/currency';
 import { getTransactions } from './controllers/firebase/transactions';
 
 const App = () => {
-  const { user, dispatch } = useStoreon('user', 'userTransactions');
+  const { user, dispatch, userCurrency } = useStoreon('user', 'userCurrency');
   const [isInitializing, setInitializing] = useState(true);
   const [isLoaded, setLoaded] = useState(false);
   const [isTransactionsLoaded, setTransactionsLoaded] = useState({
     incomes: false,
     expenses: false,
   });
+  const [isCurrencyLoaded, setCurrencyLoaded] = useState(false);
 
   const links = [
     { name: 'Main', path: '/' },
@@ -74,12 +76,8 @@ const App = () => {
 
     const result = await getTransactions(user.userId, type);
 
-    if (type === 'expenses') {
-      dispatch('userTransactions/addExpenses', result);
-    }
-    if (type === 'incomes') {
-      dispatch('userTransactions/addIncomes', result);
-    }
+    if (type === 'expenses') dispatch('userTransactions/addExpenses', result);
+    if (type === 'incomes') dispatch('userTransactions/addIncomes', result);
 
     setTransactionsLoaded((prevTransactionsLoading) => ({
       ...prevTransactionsLoading,
@@ -96,8 +94,22 @@ const App = () => {
   }, [isInitializing]);
 
   useEffect(() => {
-    if (isTransactionsLoaded.expenses && isTransactionsLoaded.incomes) setLoaded(true);
-  }, [isTransactionsLoaded]);
+    if (isTransactionsLoaded.expenses && isTransactionsLoaded.incomes && isCurrencyLoaded) setLoaded(true);
+  }, [isTransactionsLoaded, isCurrencyLoaded]);
+
+  useEffect(() => {
+    const fetchCurrency = async () => {
+      setCurrencyLoaded(false);
+
+      const result = await getCurrency(user.userId);
+
+      if (result) dispatch('userCurrency/update', result);
+
+      setCurrencyLoaded(true);
+    };
+
+    if (!isInitializing) fetchCurrency();
+  }, [isInitializing]);
 
   const renderRoutes = useMemo(() => {
     return routes.map((route) => {

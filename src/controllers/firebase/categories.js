@@ -21,7 +21,7 @@ export const addCategories = async (userId, categories) => {
   return firestore
     .collection('transactions')
     .doc(userId)
-    .set({ categories: categories })
+    .set({ categories: categories }, { merge: true })
     .then(() => {
       return 'Categories added';
     })
