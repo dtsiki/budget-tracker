@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useStoreon } from 'storeon/react';
 
-import { getTransactions } from './../../../controllers/firebase/transactions';
+import transactionTypes from './../../../constants/transactionTypes';
 import Loader from './../../base/Loader';
 import Radio from './../../base/Radio';
 import Transactions from './../../common/Transactions';
@@ -9,81 +9,53 @@ import Transactions from './../../common/Transactions';
 import './style.scss';
 
 const Budget = () => {
-  const { user } = useStoreon('user');
+  const { userTransactions } = useStoreon('user', 'userTransactions');
   const [type, setType] = useState('expenses');
-  const [isInitializing, setInitializing] = useState({
-    expenses: true,
-    incomes: true,
-  });
   const [transactions, setTransactions] = useState({
     expenses: [],
     incomes: [],
   });
-  const [isLoaded, setLoaded] = useState({
-    expenses: false,
-    incomes: false,
-  });
+  const [isLoaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      setInitializing((prevInitializing) => ({
-        ...prevInitializing,
-        [type]: true,
-      }));
-
-      const result = await getTransactions(user.userId, type);
-
-      if (result) {
-        setTransactions((prevTransactions) => ({
-          ...prevTransactions,
-          [type]: result,
-        }));
-      }
-
-      setInitializing((prevInitializing) => ({
-        ...prevInitializing,
-        [type]: false,
-      }));
-
-      setLoaded((prevLoaded) => ({
-        ...prevLoaded,
-        [type]: true,
-      }));
-    };
-
-    if (!isLoaded[type]) fetchTransactions();
-  }, [type]);
+    if (userTransactions) {
+      setTransactions(userTransactions);
+      setLoaded(true);
+    }
+  }, [userTransactions]);
 
   const changeType = (e) => {
     setType(e.target.name);
   };
 
-  const types = ['expenses', 'incomes'];
-
   const renderTypes = useMemo(() => {
-    return types.map((typesItem) => {
+    return transactionTypes.map((transactionType) => {
       return (
         <Radio
-          key={`type-${typesItem}`}
+          key={`type-${transactionType}`}
           wrapperClassName=""
-          label={typesItem}
-          value={typesItem}
+          label={transactionType}
+          value={transactionType}
           changeValue={changeType}
-          name={typesItem}
-          checked={type === typesItem}
+          name={transactionType}
+          checked={type === transactionType}
         />
       );
     });
-  }, [types]);
+  }, [transactionTypes]);
 
   return (
     <div>
       <h1>Budget</h1>
       <div className="flex">{renderTypes}</div>
-      <div className="section">
-        <h2>{type}</h2>
-        {isInitializing[type] ? <Loader /> : <Transactions transactions={transactions[type]} type={type} />}
-      </div>
+      {isLoaded ? (
+        <div className="section">
+          <h2>{type}</h2>
+          {<Transactions transactions={transactions[type]} type={type} />}
+        </div>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 };

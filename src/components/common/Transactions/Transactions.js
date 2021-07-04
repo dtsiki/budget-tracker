@@ -7,7 +7,7 @@ import './style.scss';
 
 const Transactions = ({ transactions, type }) => {
   const renderTransactions = useMemo(() => {
-    if (!transactions.length) return <div>No transactions</div>;
+    if (!transactions?.length) return <div>No transactions</div>;
 
     if (Array.isArray(transactions)) {
       return (

@@ -14,12 +14,18 @@ import Profile from './components/pages/Profile';
 import SignIn from './components/pages/SignIn';
 import SignUp from './components/pages/SignUp';
 import { auth } from './config';
+import transactionTypes from './constants/transactionTypes';
 import { getUserDoc } from './controllers/firebase/auth';
+import { getTransactions } from './controllers/firebase/transactions';
 
 const App = () => {
-  const { dispatch } = useStoreon('user');
+  const { user, dispatch } = useStoreon('user', 'userTransactions');
   const [isInitializing, setInitializing] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isTransactionsLoading, setTransactionsLoading] = useState({
+    incomes: true,
+    expenses: true,
+  });
 
   const links = [
     { name: 'Main', path: '/' },
@@ -65,6 +71,35 @@ const App = () => {
       dispatch('user/login', userInfo);
     }
   }, [currentUser]);
+
+  const fetchTransactions = async (type) => {
+    setTransactionsLoading((prevTransactionsLoading) => ({
+      ...prevTransactionsLoading,
+      [type]: true,
+    }));
+
+    const result = await getTransactions(user.userId, type);
+
+    if (type === 'expenses') {
+      dispatch('userTransactions/addExpenses', result);
+    }
+    if (type === 'incomes') {
+      dispatch('userTransactions/addIncomes', result);
+    }
+
+    setTransactionsLoading((prevTransactionsLoading) => ({
+      ...prevTransactionsLoading,
+      [type]: false,
+    }));
+  };
+
+  useEffect(() => {
+    if (!isInitializing) {
+      transactionTypes.map((transactionType) => {
+        fetchTransactions(transactionType);
+      });
+    }
+  }, [isInitializing]);
 
   return isInitializing ? (
     <Loader isFullscreen />
