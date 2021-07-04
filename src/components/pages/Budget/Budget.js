@@ -42,7 +42,7 @@ const Budget = () => {
         />
       );
     });
-  }, [transactionTypes]);
+  }, [transactionTypes, type]);
 
   return (
     <div>
