@@ -21,9 +21,10 @@ import { getTransactions } from './controllers/firebase/transactions';
 const App = () => {
   const { user, dispatch } = useStoreon('user', 'userTransactions');
   const [isInitializing, setInitializing] = useState(true);
-  const [isTransactionsLoading, setTransactionsLoading] = useState({
-    incomes: true,
-    expenses: true,
+  const [isLoaded, setLoaded] = useState(false);
+  const [isTransactionsLoaded, setTransactionsLoaded] = useState({
+    incomes: false,
+    expenses: false,
   });
 
   const links = [
@@ -66,9 +67,9 @@ const App = () => {
   }, []);
 
   const fetchTransactions = async (type) => {
-    setTransactionsLoading((prevTransactionsLoading) => ({
+    setTransactionsLoaded((prevTransactionsLoading) => ({
       ...prevTransactionsLoading,
-      [type]: true,
+      [type]: false,
     }));
 
     const result = await getTransactions(user.userId, type);
@@ -80,9 +81,9 @@ const App = () => {
       dispatch('userTransactions/addIncomes', result);
     }
 
-    setTransactionsLoading((prevTransactionsLoading) => ({
+    setTransactionsLoaded((prevTransactionsLoading) => ({
       ...prevTransactionsLoading,
-      [type]: false,
+      [type]: true,
     }));
   };
 
@@ -93,6 +94,10 @@ const App = () => {
       });
     }
   }, [isInitializing]);
+
+  useEffect(() => {
+    if (isTransactionsLoaded.expenses && isTransactionsLoaded.incomes) setLoaded(true);
+  }, [isTransactionsLoaded]);
 
   const renderRoutes = useMemo(() => {
     return routes.map((route) => {
@@ -111,11 +116,9 @@ const App = () => {
           <PublicRoute key={`${route.name}`} exact={route.isExact} path={route.path} component={route.component} />
         );
     });
-  }, [links]);
+  }, [routes]);
 
-  return isInitializing ? (
-    <Loader isFullscreen />
-  ) : (
+  return isLoaded ? (
     <>
       <div className="wrapper">
         <Nav links={links} />
@@ -123,6 +126,8 @@ const App = () => {
       </div>
       <Notifications />
     </>
+  ) : (
+    <Loader isFullscreen />
   );
 };
 
