@@ -5,7 +5,7 @@ import './style.scss';
 
 const Loader = ({ isFullscreen = false }) => {
   return (
-    <div className={`loader${isFullscreen ? 'loader--fullscreen' : ''}`}>
+    <div className={`loader${isFullscreen ? ' loader--fullscreen' : ''}`}>
       <div className="loader__wrapper">
         <div className="loader__spinner" />
         <div className="loader__label">Loading...</div>

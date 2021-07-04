@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Switch } from 'react-router-dom';
 import { useStoreon } from 'storeon/react';
 
@@ -21,7 +21,6 @@ import { getTransactions } from './controllers/firebase/transactions';
 const App = () => {
   const { user, dispatch } = useStoreon('user', 'userTransactions');
   const [isInitializing, setInitializing] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null);
   const [isTransactionsLoading, setTransactionsLoading] = useState({
     incomes: true,
     expenses: true,
@@ -35,42 +34,36 @@ const App = () => {
     { name: 'Secret page', path: 'admin', isAuthRequired: true },
   ];
 
-  const onAuthStateChanged = (user) => {
-    setCurrentUser(user);
-
-    if (isInitializing) setInitializing(false);
-  };
-
-  useEffect(() => {
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-
-    return subscriber;
-  }, []);
+  const routes = [
+    { name: 'Main', path: '/', isPrivate: true, component: Main, isExact: true },
+    { name: 'Budget', path: '/budget', isPrivate: true, component: Budget },
+    { name: 'Profile', path: '/profile', isPrivate: true, component: Profile },
+    { name: 'Sign In', path: '/signin', isPrivate: false, component: SignIn },
+    { name: 'Sign Up', path: '/signup', isPrivate: false, component: SignUp },
+    { name: 'Secret page', path: '/admin', isPrivate: true, isForbidden: true, component: Admin },
+    { name: '404', path: '*', isPrivate: false, component: Error },
+  ];
 
   useEffect(() => {
-    const checkUserRole = async (userId) => {
-      const result = await getUserDoc(userId);
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const result = await getUserDoc(user.uid);
 
-      if (result.isAdmin) {
-        return true;
+        if (result) {
+          const userObj = {
+            isLogin: true,
+            displayName: user.displayName,
+            email: user.email,
+            isAdmin: result.isAdmin,
+            userId: user.uid,
+          };
+
+          dispatch('user/login', userObj);
+          setInitializing(false);
+        }
       }
-      return false;
-    };
-
-    if (currentUser) {
-      const isUserAdmin = checkUserRole(currentUser.uid);
-
-      const userInfo = {
-        isLogin: true,
-        displayName: currentUser.displayName,
-        email: currentUser.email,
-        isAdmin: isUserAdmin ? true : false,
-        userId: currentUser.uid,
-      };
-
-      dispatch('user/login', userInfo);
-    }
-  }, [currentUser]);
+    });
+  }, []);
 
   const fetchTransactions = async (type) => {
     setTransactionsLoading((prevTransactionsLoading) => ({
@@ -101,21 +94,32 @@ const App = () => {
     }
   }, [isInitializing]);
 
+  const renderRoutes = useMemo(() => {
+    return routes.map((route) => {
+      if (route.isPrivate) {
+        return (
+          <PrivateRoute
+            key={`${route.name}`}
+            exact={route.isExact}
+            path={route.path}
+            component={route.component}
+            isForbidden={route.isForbidden}
+          />
+        );
+      } else
+        return (
+          <PublicRoute key={`${route.name}`} exact={route.isExact} path={route.path} component={route.component} />
+        );
+    });
+  }, [links]);
+
   return isInitializing ? (
     <Loader isFullscreen />
   ) : (
     <>
       <div className="wrapper">
         <Nav links={links} />
-        <Switch>
-          <PrivateRoute exact path="/" component={Main} />
-          <PrivateRoute path="/profile" component={Profile} />
-          <PrivateRoute path="/budget" component={Budget} />
-          <PrivateRoute path="/admin" component={Admin} isForbidden />
-          <PublicRoute path="/signin" component={SignIn} />
-          <PublicRoute path="/signup" component={SignUp} />
-          <PublicRoute path="*" component={Error} />
-        </Switch>
+        <Switch>{renderRoutes}</Switch>
       </div>
       <Notifications />
     </>

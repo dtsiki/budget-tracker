@@ -28,6 +28,15 @@ $loader-duration: 1.5s;
     @include visually-hidden;
   }
 
+  &--fullscreen {
+    .loader__wrapper {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
   &--overlay {
     position: absolute;
     top: 0;
