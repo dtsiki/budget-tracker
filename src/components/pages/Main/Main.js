@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useStoreon } from 'storeon/react';
 
 import Button from '../../base/Button';
@@ -20,6 +20,10 @@ const Main = () => {
   const [showCategories, setShowCategories] = useState(false);
   const [type, setType] = useState('expenses');
   const [currency, setCurrency] = useState(userCurrency);
+  const [summary, setSummary] = useState({
+    expenses: 0,
+    incomes: 0,
+  });
 
   const toggleTransaction = () => {
     setShowTransactionForm((showTransactionForm) => !showTransactionForm);
@@ -53,6 +57,19 @@ const Main = () => {
     });
   }, [defaultCurrencies, currency]);
 
+  const getSummaryExpenses = () => {
+    const categoriesSummary = userCategories.expense.map((category) => {
+      const categoryExpenses = userTransactions.expenses.filter((expense) => expense.category === category);
+
+      const reducer = (accumulator, currentValue) => accumulator + parseInt(currentValue.value);
+
+      const categorySummary = categoryExpenses.reduce(reducer, 0);
+      return categorySummary;
+    });
+
+    return categoriesSummary.reduce((accumulator, currentValue) => accumulator + currentValue);
+  };
+
   const renderExpenses = useMemo(() => {
     return userCategories.expense.map((category) => {
       const categoryExpenses = userTransactions.expenses.filter((expense) => expense.category === category);
@@ -61,10 +78,13 @@ const Main = () => {
       const categorySummary = categoryExpenses.reduce(reducer, 0);
 
       if (categoryExpenses.length) {
+        const categorySummaryLabel = `-${categorySummary} ${currency}`;
+        const categoryPercentage = `${Math.round((categorySummary * 100) / summary.expenses)}%`;
+
         return (
           <div key={`${category}-expenses`} className="group">
             <h3>
-              {category} ({categorySummary})
+              {category} ({categorySummaryLabel}/{categoryPercentage})
             </h3>
             <ul className="list">
               {categoryExpenses.map((expense) => {
@@ -87,6 +107,15 @@ const Main = () => {
         );
       */
     });
+  }, [userTransactions, userCategories, summary]);
+
+  useEffect(() => {
+    const summaryExpenses = getSummaryExpenses();
+
+    setSummary((prevSummary) => ({
+      ...prevSummary,
+      expenses: summaryExpenses,
+    }));
   }, [userTransactions, userCategories]);
 
   return (
@@ -94,6 +123,9 @@ const Main = () => {
       <h1>Main</h1>
       <div className="section">
         <h2>Expenses by categories</h2>
+        <h3>
+          Summary: -{summary.expenses} {currency}/100%
+        </h3>
         {renderExpenses}
       </div>
       <div>
