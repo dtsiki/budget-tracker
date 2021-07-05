@@ -1,6 +1,8 @@
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
-import { Link, NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useStoreon } from 'storeon/react';
 
 import { logout } from './../../../controllers/firebase/auth';
@@ -41,11 +43,13 @@ const Nav = ({ links }) => {
       <ul className="nav-menu">{renderMenu}</ul>
 
       <footer className="nav-footer">
-        {user.isLogin ? (
-          <Button onClick={handleLogout}>Logout</Button>
-        ) : (
-          <Button>
-            <Link to="/signin">Sign in</Link>
+        {user.isLogin && (
+          <Button
+            customClassName="nav-button nav-button--logout"
+            onClick={handleLogout}
+            icon={<FontAwesomeIcon icon={faSignOutAlt} />}
+          >
+            Logout
           </Button>
         )}
       </footer>
