@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useStoreon } from 'storeon/react';
 
 import Button from '../../base/Button';
@@ -58,8 +58,8 @@ const Main = () => {
   }, [defaultCurrencies, currency]);
 
   const getSummary = (type) => {
-    if (type === 'expenses' && !userCategories.expense) return;
-    if (type === 'incomes' && !userCategories.income) return;
+    if (type === 'expenses' && !userCategories.expense && !userTransactions[type]) return;
+    if (type === 'incomes' && !userCategories.income && !userTransactions[type]) return;
 
     const categories = type === 'expenses' ? userCategories.expense : userCategories.income;
 
@@ -75,57 +75,52 @@ const Main = () => {
     return categoriesSummary.reduce((accumulator, currentValue) => accumulator + currentValue);
   };
 
-  const getSummaryExpenses = () => {
-    const categoriesSummary = userCategories.expense.map((category) => {
-      const categoryExpenses = userTransactions.expenses.filter((expense) => expense.category === category);
+  const renderCategories = useCallback(
+    (type) => {
+      if (type === 'expenses' && !userCategories.expense && !userTransactions[type]) return;
+      if (type === 'incomes' && !userCategories.income && !userTransactions[type]) return;
 
-      const reducer = (accumulator, currentValue) => accumulator + parseInt(currentValue.value);
+      const categories = type === 'expenses' ? userCategories.expense : userCategories.income;
 
-      const categorySummary = categoryExpenses.reduce(reducer, 0);
-      return categorySummary;
-    });
+      return categories.map((category) => {
+        const categoryItems = userTransactions[type].filter((item) => item.category === category);
 
-    return categoriesSummary.reduce((accumulator, currentValue) => accumulator + currentValue);
-  };
+        const reducer = (accumulator, currentValue) => accumulator + parseInt(currentValue.value);
+        const categorySummary = categoryItems.reduce(reducer, 0);
 
-  const renderExpenses = useMemo(() => {
-    return userCategories.expense.map((category) => {
-      const categoryExpenses = userTransactions.expenses.filter((expense) => expense.category === category);
+        if (categoryItems.length) {
+          const categorySummaryLabel = `${type === 'expenses' ? '-' : '+'}${categorySummary} ${currency}`;
+          const categoryPercentage = `${Math.round((categorySummary * 100) / summary[type])}%`;
 
-      const reducer = (accumulator, currentValue) => accumulator + parseInt(currentValue.value);
-      const categorySummary = categoryExpenses.reduce(reducer, 0);
-
-      if (categoryExpenses.length) {
-        const categorySummaryLabel = `-${categorySummary} ${currency}`;
-        const categoryPercentage = `${Math.round((categorySummary * 100) / summary.expenses)}%`;
-
-        return (
-          <div key={`${category}-expenses`} className="group">
-            <h3>
-              {category} ({categorySummaryLabel}/{categoryPercentage})
-            </h3>
-            <ul className="list">
-              {categoryExpenses.map((expense) => {
-                return (
-                  <li key={`expense-${expense.description}-${expense.date}-${expense.value}`} className="list__item">
-                    {expense.description} {expense.value}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        );
-      } else return;
-      /*
-        return (
-          <div className="group">
-            <h3>{category}</h3>
-            <Text>No expenses</Text>
-          </div>
-        );
-      */
-    });
-  }, [userTransactions, userCategories, summary]);
+          return (
+            <div key={`${category}-${type}`} className="group">
+              <h3>
+                {category} ({categorySummaryLabel}/{categoryPercentage})
+              </h3>
+              <ul className="list">
+                {categoryItems.map((item) => {
+                  return (
+                    <li key={`${type}-${item.description}-${item.date}-${item.value}`} className="list__item">
+                      {item.description} {item.value}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        } else return;
+        /*
+          return (
+            <div className="group">
+              <h3>{category}</h3>
+              <Text>No expenses</Text>
+            </div>
+          );
+        */
+      });
+    },
+    [userCategories, userTransactions]
+  );
 
   useEffect(() => {
     const summaryExpenses = getSummary('expenses');
@@ -153,7 +148,14 @@ const Main = () => {
         <h3>
           Summary: -{summary.expenses} {currency}/100%
         </h3>
-        {renderExpenses}
+        {renderCategories('expenses')}
+      </div>
+      <div className="section">
+        <h2>Incomes by categories</h2>
+        <h3>
+          Summary: +{summary.incomes} {currency}/100%
+        </h3>
+        {renderCategories('incomes')}
       </div>
       <div>
         <Button variant={showCategories ? `secondary` : 'primary'} onClick={toggleCategories}>
