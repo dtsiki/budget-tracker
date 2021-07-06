@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useStoreon } from 'storeon/react';
 
 import Button from '../../base/Button';
+import Checkbox from '../../base/Checkbox';
 import Radio from '../../base/Radio';
+import Text from '../../base/Text';
 import defaultCurrencies from './../../../constants/defaultCurrencies';
 import { updateCurrency } from './../../../controllers/firebase/currency';
 import Dropdown from './../../base/Dropdown';
@@ -24,22 +26,25 @@ const Main = () => {
     expenses: 0,
     incomes: 0,
   });
+  const [showEmptyCategories, setShowEmptyCategories] = useState(false);
 
-  const toggleTransaction = () => {
-    setShowTransactionForm((showTransactionForm) => !showTransactionForm);
-  };
+  useEffect(() => {
+    const summaryExpenses = getSummary('expenses');
 
-  const toggleCategories = () => {
-    setShowCategories((showCategories) => !showCategories);
-  };
+    setSummary((prevSummary) => ({
+      ...prevSummary,
+      expenses: summaryExpenses,
+    }));
+  }, [userTransactions, userCategories]);
 
-  const selectCurrency = async (currency) => {
-    const result = await updateCurrency(user.userId, currency);
+  useEffect(() => {
+    const summaryIncomes = getSummary('incomes');
 
-    dispatch('notifications/add', result);
-
-    setCurrency(currency);
-  };
+    setSummary((prevSummary) => ({
+      ...prevSummary,
+      incomes: summaryIncomes,
+    }));
+  }, [userTransactions, userCategories]);
 
   const renderСurrencies = useMemo(() => {
     return defaultCurrencies.map((defaultCurrency) => {
@@ -108,55 +113,67 @@ const Main = () => {
               </ul>
             </div>
           );
-        } else return;
-        /*
-          return (
-            <div className="group">
-              <h3>{category}</h3>
-              <Text>No expenses</Text>
-            </div>
-          );
-        */
+        } else {
+          if (showEmptyCategories) {
+            return (
+              <div className="group">
+                <h3>{category}</h3>
+                <Text>No expenses</Text>
+              </div>
+            );
+          } else return;
+        }
       });
     },
-    [userCategories, userTransactions]
+    [userCategories, userTransactions, summary, showEmptyCategories]
   );
 
-  useEffect(() => {
-    const summaryExpenses = getSummary('expenses');
+  const renderTransactionsByCategories = useCallback(
+    (type) => {
+      return (
+        <div className="section">
+          <h2>{type} by categories</h2>
+          <h3>
+            Summary: -{summary[type]} {currency}/100%
+          </h3>
+          {renderCategories(type)}
+        </div>
+      );
+    },
+    [userCategories, userTransactions, summary, showEmptyCategories]
+  );
 
-    setSummary((prevSummary) => ({
-      ...prevSummary,
-      expenses: summaryExpenses,
-    }));
-  }, [userTransactions, userCategories]);
+  const toggleTransaction = () => {
+    setShowTransactionForm((showTransactionForm) => !showTransactionForm);
+  };
 
-  useEffect(() => {
-    const summaryIncomes = getSummary('incomes');
+  const toggleCategories = () => {
+    setShowCategories((showCategories) => !showCategories);
+  };
 
-    setSummary((prevSummary) => ({
-      ...prevSummary,
-      incomes: summaryIncomes,
-    }));
-  }, [userTransactions, userCategories]);
+  const selectCurrency = async (currency) => {
+    const result = await updateCurrency(user.userId, currency);
+
+    dispatch('notifications/add', result);
+
+    setCurrency(currency);
+  };
+
+  const toggleEmptyCategories = () => {
+    setShowEmptyCategories((showEmptyCategories) => !showEmptyCategories);
+  };
 
   return (
     <div>
       <h1>Main</h1>
-      <div className="section">
-        <h2>Expenses by categories</h2>
-        <h3>
-          Summary: -{summary.expenses} {currency}/100%
-        </h3>
-        {renderCategories('expenses')}
-      </div>
-      <div className="section">
-        <h2>Incomes by categories</h2>
-        <h3>
-          Summary: +{summary.incomes} {currency}/100%
-        </h3>
-        {renderCategories('incomes')}
-      </div>
+      <Checkbox
+        name="emptyCategoriesToggle"
+        value={showEmptyCategories}
+        onChange={toggleEmptyCategories}
+        label={`${showEmptyCategories ? 'Hide' : 'Show'} empty categories`}
+      />
+      {renderTransactionsByCategories('expenses')}
+      {renderTransactionsByCategories('incomes')}
       <div>
         <Button variant={showCategories ? `secondary` : 'primary'} onClick={toggleCategories}>
           {showCategories ? `Hide categories` : `Manage categories`}
