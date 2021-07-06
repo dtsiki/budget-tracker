@@ -57,6 +57,24 @@ const Main = () => {
     });
   }, [defaultCurrencies, currency]);
 
+  const getSummary = (type) => {
+    if (type === 'expenses' && !userCategories.expense) return;
+    if (type === 'incomes' && !userCategories.income) return;
+
+    const categories = type === 'expenses' ? userCategories.expense : userCategories.income;
+
+    const categoriesSummary = categories.map((category) => {
+      const categoryItems = userTransactions[type].filter((item) => item.category === category);
+
+      const reducer = (accumulator, currentValue) => accumulator + parseInt(currentValue.value);
+
+      const categorySummary = categoryItems.reduce(reducer, 0);
+      return categorySummary;
+    });
+
+    return categoriesSummary.reduce((accumulator, currentValue) => accumulator + currentValue);
+  };
+
   const getSummaryExpenses = () => {
     const categoriesSummary = userCategories.expense.map((category) => {
       const categoryExpenses = userTransactions.expenses.filter((expense) => expense.category === category);
@@ -110,11 +128,20 @@ const Main = () => {
   }, [userTransactions, userCategories, summary]);
 
   useEffect(() => {
-    const summaryExpenses = getSummaryExpenses();
+    const summaryExpenses = getSummary('expenses');
 
     setSummary((prevSummary) => ({
       ...prevSummary,
       expenses: summaryExpenses,
+    }));
+  }, [userTransactions, userCategories]);
+
+  useEffect(() => {
+    const summaryIncomes = getSummary('incomes');
+
+    setSummary((prevSummary) => ({
+      ...prevSummary,
+      incomes: summaryIncomes,
     }));
   }, [userTransactions, userCategories]);
 
