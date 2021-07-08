@@ -20,7 +20,7 @@ import { getCurrency } from './controllers/firebase/currency';
 import { getTransactions } from './controllers/firebase/transactions';
 
 const App = () => {
-  const { user, dispatch, userCurrency } = useStoreon('user', 'userCurrency');
+  const { user, dispatch } = useStoreon('user', 'userCurrency');
   const [isInitializing, setInitializing] = useState(true);
   const [isLoaded, setLoaded] = useState(false);
   const [isTransactionsLoaded, setTransactionsLoaded] = useState({
@@ -51,6 +51,18 @@ const App = () => {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         const result = await getUserDoc(user.uid);
+
+        if (typeof result === 'string') {
+          const userObj = {
+            isLogin: false,
+            isAdmin: false,
+          };
+
+          dispatch('user/login', userObj);
+          dispatch('notifications/add', result);
+          setInitializing(false);
+          return;
+        }
 
         if (result) {
           const userObj = {
