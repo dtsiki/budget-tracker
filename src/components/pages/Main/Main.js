@@ -94,7 +94,7 @@ const Main = () => {
         const categorySummary = categoryItems.reduce(reducer, 0);
 
         if (categoryItems.length) {
-          const categorySummaryLabel = `${type === 'expenses' ? '-' : '+'}${categorySummary} ${currency}`;
+          const categorySummaryLabel = `${categorySummary} ${currency}`;
           const categoryPercentage = `${Math.round((categorySummary * 100) / summary[type])}%`;
 
           return (
@@ -116,7 +116,7 @@ const Main = () => {
         } else {
           if (showEmptyCategories) {
             return (
-              <div className="group">
+              <div className="group" key={`empty-${category}`}>
                 <h3>{category}</h3>
                 <Text>No expenses</Text>
               </div>
@@ -130,11 +130,14 @@ const Main = () => {
 
   const renderTransactionsByCategories = useCallback(
     (type) => {
+      const sign = type === 'incomes' ? '+' : '-';
+
       return (
         <div className="section">
           <h2>{type} by categories</h2>
           <h3>
-            Summary: -{summary[type]} {currency}/100%
+            Summary: {sign}
+            {summary[type]} {currency}/100%
           </h3>
           {renderCategories(type)}
         </div>
