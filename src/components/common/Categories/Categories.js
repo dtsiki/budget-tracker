@@ -134,41 +134,38 @@ const Categories = () => {
 
   return (
     <>
-      <div className="section">
-        <h2>Categories</h2>
-        <div className="flex">
-          <Radio
-            wrapperClassName=""
-            label="Expense"
-            value="expense"
-            changeValue={changeType}
-            name="expense"
-            checked={type === 'expense'}
-          />
-          <Radio
-            wrapperClassName=""
-            label="Income"
-            value="income"
-            changeValue={changeType}
-            name="income"
-            checked={type === 'income'}
-          />
-        </div>
-        <Input
-          value={category}
-          onChange={(e) => changeCategory(e)}
-          type="text"
-          name="category"
-          id="category"
-          placeholder=""
-          label="Add category:"
+      <div className="flex">
+        <Radio
+          wrapperClassName=""
+          label="Expenses"
+          value="expense"
+          changeValue={changeType}
+          name="expense"
+          checked={type === 'expense'}
         />
-        <Button onClick={addCategory}>Add new category</Button>
-        {isInitializing.categories ? <Loader /> : <ul className="categories">{renderCategories}</ul>}
-        <Button onClick={resetCategories} variant="secondary">
-          Reset categories
-        </Button>
+        <Radio
+          wrapperClassName=""
+          label="Incomes"
+          value="income"
+          changeValue={changeType}
+          name="income"
+          checked={type === 'income'}
+        />
       </div>
+      <Input
+        value={category}
+        onChange={(e) => changeCategory(e)}
+        type="text"
+        name="category"
+        id="category"
+        placeholder="Enter new category name"
+        label="Add category:"
+      />
+      <Button onClick={addCategory}>Add new category</Button>
+      {isInitializing.categories ? <Loader /> : <ul className="categories">{renderCategories}</ul>}
+      <Button onClick={resetCategories} variant="secondary">
+        Delete all categories
+      </Button>
     </>
   );
 };

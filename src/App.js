@@ -11,6 +11,7 @@ import Budget from './components/pages/Budget';
 import Error from './components/pages/Error';
 import Main from './components/pages/Main';
 import Profile from './components/pages/Profile';
+import Settings from './components/pages/Settings';
 import SignIn from './components/pages/SignIn';
 import SignUp from './components/pages/SignUp';
 import { auth } from './config';
@@ -35,6 +36,7 @@ const App = () => {
     { name: 'Profile', path: '/profile', isAuthRequired: true },
     { name: 'Sign In', path: '/signin', isAuthNotRequired: true },
     { name: 'Secret page', path: 'admin', isAuthRequired: true },
+    { name: 'Settings', path: 'settings', isAuthRequired: true },
   ];
 
   const routes = [
@@ -44,6 +46,7 @@ const App = () => {
     { name: 'Sign In', path: '/signin', isPrivate: false, component: SignIn },
     { name: 'Sign Up', path: '/signup', isPrivate: false, component: SignUp },
     { name: 'Secret page', path: '/admin', isPrivate: true, isForbidden: true, component: Admin },
+    { name: 'Settings', path: '/settings', isPrivate: true, component: Settings },
     { name: '404', path: '*', isPrivate: false, component: Error },
   ];
 
